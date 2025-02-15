@@ -33,10 +33,14 @@ def generate_launch_description():
         ),
     )
 
+    rviz_config_file = LaunchConfiguration(
+        "rviz_config",
+        default=os.path.join(
+            get_package_share_directory("carter_navigation"), "rviz2", "carter_navigation.rviz"
+        ),
+    )
 
     nav2_bringup_launch_dir = os.path.join(get_package_share_directory("nav2_bringup"), "launch")
-
-    rviz_config_dir = os.path.join(get_package_share_directory("carter_navigation"), "rviz2", "carter_navigation.rviz")
 
     return LaunchDescription(
         [
@@ -47,9 +51,12 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "use_sim_time", default_value="true", description="Use simulation (Omniverse Isaac Sim) clock if true"
             ),
+            DeclareLaunchArgument(
+                "rviz_config", default_value=rviz_config_file, description="Full path to RViz config file to load"
+            ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(os.path.join(nav2_bringup_launch_dir, "rviz_launch.py")),
-                launch_arguments={"namespace": "", "use_namespace": "False", "rviz_config": rviz_config_dir}.items(),
+                launch_arguments={"namespace": "", "use_namespace": "False", "rviz_config": rviz_config_file}.items(),
             ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([nav2_bringup_launch_dir, "/bringup_launch.py"]),
